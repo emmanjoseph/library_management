@@ -22,8 +22,3 @@ export default ratelimit
 // const identifier = "api";
 // const { success } = await ratelimit.limit(identifier);
 
-// if (!success) {
-//   return "Unable to process at this time";
-// }
-// doExpensiveCalculation();
-// return "Here you go!";

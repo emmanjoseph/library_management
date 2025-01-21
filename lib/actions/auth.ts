@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import ratelimit from "../ratelimit";
 import { redirect } from "next/navigation";
+import { signOut as authSignOut } from '@/auth';
 
 
 export const signUp = async (params: AuthCredentials): Promise<{ success: boolean; error?: string }> => {
@@ -34,7 +35,7 @@ export const signUp = async (params: AuthCredentials): Promise<{ success: boolea
   // Hash the password
   const hashedPassword = await hash(password, 10);
 
-  // await signInWithCredentials({email,password}) 
+  
   try {
     // Insert the new user into the database
     await db.insert(users).values({
@@ -46,6 +47,7 @@ export const signUp = async (params: AuthCredentials): Promise<{ success: boolea
       universityCard,
     });
 
+    signInWithCredentials({email,password});
     return { success: true };
   } catch (err) {
     console.error("Signup error:", err);
@@ -83,4 +85,9 @@ export const signInWithCredentials= async (params:Pick<AuthCredentials, "email" 
     return {success:false , error:"signin error"}
     
   }
+}
+
+
+export async function signOut() {
+  await authSignOut();
 }
