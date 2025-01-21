@@ -15,6 +15,13 @@
       "when": 1737234483935,
       "tag": "0001_fancy_triathlon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1737460441650,
+      "tag": "0002_quick_scourge",
+      "breakpoints": true
     }
   ]
 }
