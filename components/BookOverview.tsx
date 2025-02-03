@@ -37,7 +37,7 @@ const BookOverview = async ({
     isEligible: availableCopies > 0,
     message:availableCopies <= 0 ? 
     "Book not available" :
-    "You're not elibible to borrow this book "
+    "You're not eligible to borrow this book "
   }
   
   return (
@@ -73,7 +73,7 @@ const BookOverview = async ({
 
         <p className="book-description">{description}</p>
 
-        <BorrowBook id={id} userId={user.id} borrowingEligibility={borrowingEligibility}/>
+        <BorrowBook bookId={id} userId={user.id} borrowingEligibility={borrowingEligibility}/>
       </div>
 
       <div className="relative flex flex-1 justify-center">

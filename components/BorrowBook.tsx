@@ -32,8 +32,9 @@ const BorrowBook = ({bookId,userId,borrowingEligibility}:Props) => {
         setBorrowing(true)
         try {
             const result = await borrowBook({bookId,userId});
-
-            if (!result) {
+            console.log(result);
+            
+            if (result) {
                 toast({
                     title:"Success",
                     description:"Enjoy your book",

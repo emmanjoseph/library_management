@@ -48,6 +48,9 @@ export const signUp = async (params: AuthCredentials): Promise<{ success: boolea
     });
 
     signInWithCredentials({email,password});
+    if (success) {
+      redirect('/')
+    }
     return { success: true };
   } catch (err) {
     console.error("Signup error:", err);
@@ -91,3 +94,26 @@ export const signInWithCredentials= async (params:Pick<AuthCredentials, "email" 
 export async function signOut() {
   await authSignOut();
 }
+
+export const getStudentDetails = async (email: string) => {
+  try {
+    // Query the database for the student by email
+    const student = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email))
+      .limit(1);
+
+    if (student.length === 0) {
+      return { success: false, error: "Student not found" };
+    }
+
+    return { success: true, data: student[0] };
+  } catch (error) {
+    console.error("Error fetching student details:", error);
+    return {
+      success: false,
+      error: "An error occurred while fetching student details.",
+    };
+  }
+};
