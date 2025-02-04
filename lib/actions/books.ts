@@ -25,10 +25,10 @@ export const borrowBook = async (params: BorrowBookParams) => {
         }
 
         // Calculate the due date (14 days from now)
-        const dueDate = dayjs().add(14, 'day').toDate().toString();
+        const dueDate = dayjs().add(14, 'day').format("YYYY-MM-DD HH:mm:ss");
 
         // Insert a new borrow record
-        const record = db.insert(borrowRecords)
+        const [record] = await db.insert(borrowRecords)
             .values({
                 userId,
                 bookId,
@@ -49,3 +49,33 @@ export const borrowBook = async (params: BorrowBookParams) => {
         throw error;
     }
 };
+
+export const userGetBorrowedBooks = async (userId:string) => {
+    try {
+        const borrowedBooks = await db
+        .select({
+            id:books.id,
+            title:books.title,
+            genre:books.genre,
+            author: books.author,
+            coverColor:books.coverColor,
+            coverUrl:books.coverUrl,
+            dueDate:borrowRecords.dueDate,
+            status:borrowRecords.status
+        })
+        .from(borrowRecords)
+        .innerJoin(books,eq(borrowRecords.bookId ,books.id))
+        .where(eq(borrowRecords.userId,userId));
+
+        return {
+            success:true,
+            data:JSON.parse(JSON.stringify(borrowedBooks))
+        }
+    } catch (error) {
+        console.log("Error fetching books",error);
+        return {
+            success:false,
+            error:"Failed to fetch the book"
+        }
+    }
+}

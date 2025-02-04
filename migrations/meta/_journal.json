@@ -22,6 +22,13 @@
       "when": 1737460441650,
       "tag": "0002_quick_scourge",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1738657324754,
+      "tag": "0003_unusual_thunderbolts",
+      "breakpoints": true
     }
   ]
 }

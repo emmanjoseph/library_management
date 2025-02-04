@@ -1,18 +1,22 @@
 import { auth } from '@/auth';
 import BookList from '@/components/BookList';
-// import IdCard from '@/components/IdCard';
 import LogoutButton from '@/components/LogoutButton';
-import { sampleBooks } from '@/constants'
 import { getStudentDetails } from '@/lib/actions/auth';
+import { userGetBorrowedBooks } from '@/lib/actions/books';
 import Image from 'next/image';
 
-
 const Page = async () => {
-const session = await auth()
-const studentEmail = session?.user?.email || "";
-const studentDetails = await getStudentDetails(studentEmail);
-// console.log(studentDetails.data?.universityCard);
+  const session = await auth();
+  const studentEmail = session?.user?.email || "";
+  const studentDetails = await getStudentDetails(studentEmail);
+  const studentId = studentDetails.data?.id || ""; // Assuming this maps to `userId`
 
+  // Fetch the books the user has borrowed
+  const borrowedBooksResponse = await userGetBorrowedBooks(studentId)
+  const borrowedBooks = borrowedBooksResponse.success ? borrowedBooksResponse.data : [];
+
+  // console.log(borrowedBooks);
+  
 
   return (
     <>
@@ -32,17 +36,23 @@ const studentDetails = await getStudentDetails(studentEmail);
             <p className='text-light-300 font-medium'>{studentDetails.data?.university}</p>
             <h1 className='text-normal font-bold text-light-100'>Student ID</h1>
             <p className='text-light-300 font-medium'>{studentDetails.data?.universityId}</p>
-
-            {/* <IdCard src={studentDetails?.data?.universityCard || "/images/fallbackId.png"} /> */}
           </div>
+
           <div className="mt-5">
-          <LogoutButton/>
+            <LogoutButton/>
           </div>
         </div>
 
-      <BookList title="Borrowed Books" books={sampleBooks} />
+
+         {borrowedBooks ? (
+        <BookList title="Borrowed Books" books={borrowedBooks} />
+         ) : (
+          <div>
+            no books borrowed
+          </div>
+         )}
+        {/* Fetch and display borrowed books */}
       </section>
-     
     </>
   );
 };

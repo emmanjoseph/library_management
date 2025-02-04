@@ -19,7 +19,7 @@ export const users = pgTable("users", {
   fullName: varchar("full_name", { length: 255 }).notNull(),
   email: text("email").notNull().unique(),
   university: varchar("university", { length: 255 }).notNull(), // Removed unique constraint
-  universityId: integer("university_id").notNull().unique(),
+  universityId: text("university_id").notNull().unique(),
   password: text("password").notNull(), // Changed to text to store hashed passwords
   universityCard: text("university_card").notNull(),
   userStatus: STATUS_ENUM("status").default("PENDING"), // Changed field name to avoid collision
