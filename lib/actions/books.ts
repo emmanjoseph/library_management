@@ -2,8 +2,10 @@
 
 import { db } from "@/database/drizzle";
 import dayjs from "dayjs";
-import { books, borrowRecords } from "@/database/schema";
-import { eq } from "drizzle-orm";
+import { books, borrowRecords, users } from "@/database/schema";
+import { eq, sql } from "drizzle-orm";
+import { desc } from 'drizzle-orm'
+
 
 // Function to handle borrowing a book
 export const borrowBook = async (params: BorrowBookParams) => {
@@ -79,3 +81,92 @@ export const userGetBorrowedBooks = async (userId:string) => {
         }
     }
 }
+
+
+export async function getTotalBooks(): Promise<number> {
+    const result = await db
+    .select({ total: sql<number>`SUM(${books.totalCopies})` })
+    .from(books);
+    return result[0]?.total ?? 0;
+  }
+
+  export async function getTotalUsers():Promise<number> {
+    const result = await db.select({ total: sql<number>`COUNT(*)` }).from(users);
+    return result[0]?.total ?? 0;
+  }
+
+  export async function getTotalBorrowedBooks():Promise<number> {
+    const result = await db.select({ total: sql<number>`COUNT(*)` }).from(borrowRecords);
+    return result[0]?.total ?? 0;
+  }
+
+  export async function getBorrowedRecords() {
+    try {
+      const result = await db
+        .select({
+          id: borrowRecords.id,
+          userId: borrowRecords.userId,
+          bookId: borrowRecords.bookId,
+          borrowDate: borrowRecords.borrowDate,
+          dueDate: borrowRecords.dueDate,
+          returnDate: borrowRecords.returnDate,
+          status: borrowRecords.status,
+          user: users.fullName,
+          author: books.author,
+          email: users.email,
+          title: books.title,
+          genre: books.genre,
+          coverUrl:books.coverUrl,
+          coverColor:books.coverColor
+        })
+        .from(borrowRecords)
+        .innerJoin(users, eq(users.id, borrowRecords.userId))
+        .innerJoin(books, eq(books.id, borrowRecords.bookId))
+        .orderBy(borrowRecords.borrowDate);
+  
+      return { success: true, data: result };
+    } catch (error) {
+      console.error("Error fetching borrowed records:", error);
+      return { success: false, error: "Failed to retrieve borrowed records" };
+    }
+  }
+
+  export async function getUsersWithBorrowedBooks() {
+    const allUsers = await db
+      .select({
+        userId: users.id,
+        universityId:users.universityId,
+        name: users.fullName,
+        email: users.email,
+        dateJoined:users.createdAt,
+        role:users.role,
+        universityIdCard:users.universityCard,
+        booksBorrowed: sql<number>`COUNT(${borrowRecords.id})`
+      })
+      .from(users)
+      .leftJoin(borrowRecords, eq(users.id, borrowRecords.userId))
+      .groupBy(users.id)
+      .orderBy(desc(users.createdAt))
+      .limit(10);
+  
+    return allUsers;
+  }
+
+  export async function getBookById(id:string) {
+    try {
+      const result = await db
+        .select()
+        .from(books)
+        .where(eq(books.id,id))
+        .limit(1);
+  
+      if (!result.length) {
+        return null; // No book found
+      }
+  
+      return result[0]; // Return the first (and only) book found
+    } catch (error) {
+      console.error("Error fetching book by ID:", error);
+      throw new Error("Failed to fetch book details");
+    }
+  }

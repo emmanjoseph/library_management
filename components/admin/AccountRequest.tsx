@@ -29,7 +29,7 @@ const AccountRequest = () => {
   return (
     <div className='bg-white p-5 rounded-xl'>
         <div className='flex items-center justify-between'>
-        <h1 className='text-base font-semibold text-dark-100/80'>Borrow Requests</h1>
+        <h1 className='text-base font-semibold text-dark-100/80'>Account Requests</h1>
          <Button className='rounded-xl text-[14px] text-primary-admin bg-light-300 hover:bg-transparent'>
                   View All
           </Button> 

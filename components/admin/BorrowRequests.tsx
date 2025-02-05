@@ -1,10 +1,15 @@
 import React from 'react'
 import { Button } from '../ui/button'
 import BookCover from '../BookCover'
-import { sampleBooks } from '@/constants'
 import { Calendar } from 'lucide-react'
+import { getBorrowedRecords } from '@/lib/actions/books'
 
-const BorrowRequests = () => {
+const BorrowRequests = async () => {
+  const requests = await getBorrowedRecords()
+  const slicedRequests = Array.isArray(requests?.data) ? requests.data.slice(0, 3) : [];
+  // console.log(slicedRequests);
+  
+  
   return (
     <div className='bg-white p-5 rounded-xl'>
       <div className='flex items-center justify-between'>
@@ -16,7 +21,7 @@ const BorrowRequests = () => {
 
       {/*  */}
       <div className='flex flex-col space-y-2 mt-3'>
-      {sampleBooks.slice(0,3).map((book)=>{
+      {slicedRequests.map((book)=>{
             return (
               <div key={book.id} className='flex items-center gap-3 bg-light-300 py-2 px-2 lg:px-5 rounded-xl'>
                 <div>
@@ -36,7 +41,12 @@ const BorrowRequests = () => {
                     <span>{book.genre}</span>
                   </div>
                 </div>
-                <p className='text-xs font-medium text-light-500 flex items-center gap-2 mt-1'><Calendar size={12}/><span>12/11/24</span></p>
+
+                <div className="flex items-center gap-2">
+                <p className='text-xs font-medium'>{book.user}</p>
+                <p className='text-xs font-medium text-light-500 flex items-center gap-2 mt-1'><Calendar size={12}/><span>{book.dueDate}</span></p>
+                </div>
+                
                 </div>
               </div>
             )
