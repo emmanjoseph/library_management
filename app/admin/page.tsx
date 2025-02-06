@@ -50,14 +50,14 @@ const Page = async () => {
 
       {/* rest of the body */}
       <section className='flex flex-col lg:flex-row gap-3 '>
-        <div className='w-full lg:w-1/2 grid grid-rows-2 gap-3'>
+        <div className='w-full lg:w-3/5 grid grid-rows-2 gap-3'>
           <BorrowRequests/>
           <AccountRequest/>
         </div>
-        <div className='w-full lg:w-1/2 bg-white rounded-xl shadow-sm p-5 space-y-5'>
+        <div className='w-full lg:w-2/5 bg-white rounded-xl shadow-sm p-5 space-y-5'>
         {/* top */}
         <div className='w-full flex lg:items-center justify-between'>
-        <h1 className='text-lg font-semibold text-dark-300/80'>Recently Added Books</h1>
+        <h1 className='text-base font-semibold text-dark-300/80'>Recently Added Books</h1>
         <Button className='rounded-xl text-[14px] text-primary-admin bg-light-300 hover:bg-transparent'>
           View All
         </Button>       

@@ -8,20 +8,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Eye, Trash2Icon } from 'lucide-react'
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
-import { cn } from '@/lib/utils'
 import { getUsersWithBorrowedBooks } from '@/lib/actions/books'
 
-
-
+import { Button } from '@/components/ui/button'
+import {RoleDropdown} from '@/components/admin/Dropdowns'
 
 const Users = async () => {
-  const allUsers = await getUsersWithBorrowedBooks()
+  const allUsers = await getUsersWithBorrowedBooks();
+
   return (
     <section className='bg-white p-5 rounded-2xl'>
         <div className='my-3'>
@@ -57,22 +51,10 @@ const Users = async () => {
               <TableCell>
                 <p className='font-medium text-[14px] text-dark-300'>{user.dateJoined?.toDateString()}</p>
               </TableCell>
-              <TableCell> 
-                <DropdownMenu>
-                    <DropdownMenuTrigger>
-                        <button className={cn(`${user.role === "USER" ? "bg-green-500/30 text-green-500": "bg-red-800/30 text-red-800" } py-2 px-3 font-medium rounded-full hover:bg-transparent hover:shadow-sm`)}>
-                        <p className='text-[12px]'>{user.role}</p>
-                        </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className='rounded-xl p-2'>
-                        <DropdownMenuItem>
-                            User
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            Admin
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+              {/*user dropdown */}
+              <TableCell>
+                <RoleDropdown userId={user.userId} currentRole={user.role}/>
+               
               </TableCell>
 
               <TableCell className='font-medium text-[14px] text-dark-300'>
@@ -91,7 +73,9 @@ const Users = async () => {
                 <button className='flex items-center gap-2 text-sm capitalize font-medium text-blue-500'>View id card<Eye size={14}/></button>
               </TableCell>
               <TableCell>
-                <button className="text-red-500"><Trash2Icon/></button>
+              <Button size="icon" variant="ghost">
+                <Trash2Icon className='text-red-600'/>
+              </Button>
               </TableCell>
             </TableRow>
           ))}

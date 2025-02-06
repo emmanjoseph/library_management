@@ -170,3 +170,27 @@ export async function getTotalBooks(): Promise<number> {
       throw new Error("Failed to fetch book details");
     }
   }
+
+  export async function updateBookStatus(bookId: string) {
+    try {
+      // Check if the book is currently borrowed
+      const result = await db
+        .select()
+        .from(borrowRecords)
+        .where(eq(borrowRecords.bookId, bookId))
+        .limit(1); // Only check if there's at least one borrow record
+  
+      const isBorrowed = result.length > 0; // True if borrowed
+  
+      // Update the book's status
+      await db
+        .update(borrowRecords)
+        .set({ status: isBorrowed ? "BORROWED" : "RETURNED" }) // Adjust status
+        .where(eq(borrowRecords.id, bookId));
+  
+      return { success: true, message: `Book ${bookId} status updated.` };
+    } catch (error) {
+      console.error("Error updating book status:", error);
+      return { success: false, message: "Failed to update book status." };
+    }
+  }

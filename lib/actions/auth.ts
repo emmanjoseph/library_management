@@ -9,6 +9,7 @@ import { headers } from "next/headers";
 import ratelimit from "../ratelimit";
 import { redirect } from "next/navigation";
 import { signOut as authSignOut } from '@/auth';
+import { revalidatePath } from "next/cache";
 
 
 export const signUp = async (params: AuthCredentials): Promise<{ success: boolean; error?: string }> => {
@@ -117,3 +118,25 @@ export const getStudentDetails = async (email: string) => {
     };
   }
 };
+
+export async function updateUserRole(userId: string, newRole: string) {
+
+  // Define valid roles explicitly
+const validRoles = ["USER", "ADMIN"] as const;
+type UserRole = (typeof validRoles)[number];
+
+try {
+  if (!userId || !validRoles.includes(newRole as UserRole)) {
+    throw new Error("Invalid user ID or role.");
+  }
+
+  await db.update(users).set({ role: newRole as UserRole }).where(eq(users.id, userId));
+
+  revalidatePath("/admin/users"); // Refresh page
+
+  return { success: true, message: "User role updated successfully" };
+} catch (error) {
+  console.error("Error updating user role:", error);
+  return { success: false, message: "Failed to update role" };
+}
+}

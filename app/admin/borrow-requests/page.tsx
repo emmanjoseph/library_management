@@ -11,8 +11,7 @@ import {
   } from "@/components/ui/table"
   import BookCover from '@/components/BookCover';
 import { getBorrowedRecords } from '@/lib/actions/books';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
+import { ReturnDropdown } from '@/components/admin/Dropdowns';
 
 const BorrowRequests = async () => {
       const requests = await getBorrowedRecords()
@@ -62,21 +61,8 @@ const BorrowRequests = async () => {
                                             </div>
                          </TableCell>
                          <TableCell>
-                         <DropdownMenu>
-                    <DropdownMenuTrigger>
-                        <button className={cn(`${book.status === "BORROWED" ? 'bg-indigo-400/15 text-indigo-700' : 'bg-blue-300 text-indigo-700' } py-2 px-3 font-medium rounded-full hover:bg-transparent hover:shadow-sm`)}>
-                        <p className='text-[12px]'>{book.status}</p>
-                        </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className='rounded-xl p-2'>
-                        <DropdownMenuItem>
-                            Borrowed
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            Returned
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                          {/* return dropdown */}
+                          <ReturnDropdown bookId={book.bookId} currentStatus={book.status}/>
                          </TableCell>
                          <TableCell>
                             <p className='text-sm font-medium text-dark-300'>{book.borrowDate.toDateString()}</p>

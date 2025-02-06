@@ -47,8 +47,12 @@ const Page = async () => {
          {borrowedBooks ? (
         <BookList title="Borrowed Books" books={borrowedBooks} />
          ) : (
-          <div>
-            no books borrowed
+          <div className='lg:max-w-[400px] flex items-center justify-center flex-col'>
+            <Image src='/no-data.gif' alt='no data ' width={1000} height={1000} className='object-cover'/>
+            <div>
+              <h3 className='text-light-300 font-medium text-center'>No books borrowed yet</h3>
+              <p className='text-primary text-sm text-center'>Borrow your first book</p>
+            </div>
           </div>
          )}
         {/* Fetch and display borrowed books */}
