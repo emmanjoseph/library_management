@@ -6,6 +6,19 @@ import Link from 'next/link'
 import React from 'react'
 
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+
+import {
   Table,
   TableBody,
   TableCell,
@@ -15,6 +28,7 @@ import {
 } from "@/components/ui/table"
 import BookCover from '@/components/BookCover';
 import { LucideTrash2, PenLine } from 'lucide-react';
+import { DeleteBookButton } from '@/components/buttons';
 
 const Page = async () => {
    // get recently added books 
@@ -75,8 +89,30 @@ const Page = async () => {
                               <p className='text-sm font-medium text-dark-300'>{book.createdAt?.toDateString()}</p>
                             </TableCell>
                             <TableCell className='flex items-center space-x-2'>
-                              <Button variant="ghost" size="icon"><PenLine className='text-blue-500'/></Button>
+                              <Button variant="ghost" size="icon" asChild>
+                                <Link href={`/admin/books/edit/${book.id}`}>
+                                <PenLine className='text-blue-500'/>
+                                </Link>
+                                </Button>
+
+                              <AlertDialog>
+                                 <AlertDialogTrigger>
                               <Button variant="ghost" size="icon" className='text-red-600'><LucideTrash2/></Button>
+                                 </AlertDialogTrigger>
+                                 <AlertDialogContent className='rounded-xl'>
+                                   <AlertDialogHeader className='flex flex-col items-center'>
+                                   <LucideTrash2 size={40} className='text-red-800'/>
+                                     <AlertDialogTitle className='text-center text-dark-100'>Are you absolutely sure?</AlertDialogTitle>
+                                     <AlertDialogDescription className='text-center'>
+                                       This action cannot be irreversible. This will permanently delete the selected book from the storage
+                                     </AlertDialogDescription>
+                                   </AlertDialogHeader>
+                                   <AlertDialogFooter>
+                                     <AlertDialogCancel className='rounded-xl text-light-500'>Cancel</AlertDialogCancel>
+                                     <AlertDialogAction className='bg-red-800 text-light-400 rounded-xl'><DeleteBookButton bookId={book.id}/></AlertDialogAction>
+                                   </AlertDialogFooter>
+                                 </AlertDialogContent>
+                           </AlertDialog>
                             </TableCell>
                           </TableRow>
                         ))}

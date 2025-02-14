@@ -3,6 +3,7 @@ import BookCover from '@/components/BookCover'
 import { Button } from '@/components/ui/button'
 import { getBookById } from '@/lib/actions/books'
 import { ArrowLeft, Calendar, PenLine, VideoOffIcon } from 'lucide-react'
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
@@ -48,8 +49,10 @@ const Page = () => {
           <p className='text-dark-300 font-medium'>By {book?.author}</p>
           <p className='font-medium text-dark-700 italic'>Genre : {book?.genre}</p>
 
-          <Button className='bg-primary-admin w-full'>
+          <Button className='bg-primary-admin w-full' asChild>
+            <Link href={`/admin/books/edit/${book?.id}`}>
             <PenLine/><p>Edit</p>
+            </Link>
           </Button>
         </div>
 

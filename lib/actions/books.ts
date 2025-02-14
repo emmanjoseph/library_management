@@ -62,6 +62,7 @@ export const userGetBorrowedBooks = async (userId:string) => {
             author: books.author,
             coverColor:books.coverColor,
             coverUrl:books.coverUrl,
+            borrowDate:borrowRecords.borrowDate,
             dueDate:borrowRecords.dueDate,
             status:borrowRecords.status
         })
@@ -69,9 +70,21 @@ export const userGetBorrowedBooks = async (userId:string) => {
         .innerJoin(books,eq(borrowRecords.bookId ,books.id))
         .where(eq(borrowRecords.userId,userId));
 
+            // Calculate days remaining or overdue
+    const booksWithDueDays = borrowedBooks.map((book) => {
+      const dueDate = dayjs(book.dueDate);
+      const today = dayjs();
+      const daysDue = dueDate.diff(today, "day"); // Positive = days left, Negative = overdue
+
+      return {
+        ...book,
+        daysDue, // Add computed due days
+      };
+    });
+
         return {
             success:true,
-            data:JSON.parse(JSON.stringify(borrowedBooks))
+            data:JSON.parse(JSON.stringify(booksWithDueDays))
         }
     } catch (error) {
         console.log("Error fetching books",error);
@@ -192,5 +205,64 @@ export async function getTotalBooks(): Promise<number> {
     } catch (error) {
       console.error("Error updating book status:", error);
       return { success: false, message: "Failed to update book status." };
+    }
+  }
+
+  export async function deleteBook(bookId: string) {
+    try {
+      // Check if the book is currently borrowed
+      const borrowRecordExists = await db
+        .select()
+        .from(borrowRecords)
+        .where(eq(borrowRecords.bookId, bookId));
+  
+      if (borrowRecordExists.length > 0) {
+        return { success: false, message: "Cannot delete book. It's currently borrowed." };
+      }
+  
+      // Proceed with deleting the book
+      const result = await db.delete(books).where(eq(books.id, bookId));
+  
+      return result.rowCount > 0
+        ? { success: true, message: "Book deleted successfully." }
+        : { success: false, message: "Book not found." };
+    } catch (error) {
+      console.error("Error deleting the book:", error);
+      return { success: false, message: "Failed to delete book." };
+    }
+  }
+
+
+  export async function updateBook(
+    bookId:string,
+    updatedData:Partial<
+    {
+      title:string,
+      author:string,
+      genre:string,
+      name: number;
+      cover_url: string;
+      cover_color: string;
+      description: string;
+      total_copies: number;
+      available_copies: number;
+      video_url: string | null;
+      summary: string;
+    }>
+  ) {
+    try {
+      const result = await db
+      .update(books)
+      .set(updatedData)
+      .where(eq(books.id, bookId));
+
+      if (result.rowCount > 0) {
+        return { success: true, message: "Book updated successfully." };
+      } else {
+        return { success: false, message: "Book not found or no changes made." };
+      }
+    } catch (error) {
+      console.log("Error updating book",error);
+      return { success: false, message: "Failed to update book." };
     }
   }

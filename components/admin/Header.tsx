@@ -1,5 +1,8 @@
 import { Session } from 'next-auth';
 import React from 'react';
+import { Input } from '../ui/input';
+import { Search } from 'lucide-react';
+
 
 
 const Header = ({session}:{session:Session}) => {
@@ -13,7 +16,13 @@ const Header = ({session}:{session:Session}) => {
           </p>
         </div>
 
-        <p>search</p>
+       <div className='flex items-center gap-2 border rounded-xl px-4 py-1 lg:w-[450px]'>
+       <Search width={20}/>
+        <Input
+        className='bg-transparent text-dark-100 outline-none border-none font-medium focus-visible:ring-0 focus-visible:ring-offset-0'
+        placeholder='Search users, books by title, author, or genre.'
+        />
+       </div>
     </header>
   )
 }

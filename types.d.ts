@@ -14,6 +14,19 @@ interface Book {
   createdAt?: Date | null;
   isLoanedBook?:boolean
 }
+interface BorrowedBook {
+  id: string;
+  title: string;
+  author: string;
+  genre: string;
+  coverColor: string;
+  coverUrl: string;
+  dueDate?: Date | null;
+  borrowDate?: Date | null;
+  isLoanedBook?:boolean;
+  status:string,
+  daysDue:number
+}
 
 interface AuthCredentials {
   fullName: string;

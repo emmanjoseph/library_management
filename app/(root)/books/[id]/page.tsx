@@ -20,7 +20,9 @@ const Page = async ({params}:{ params:Promise<{id: string}>}) => {
         
   return (
     <div>
-        Book details
+        <Button asChild className='bg-white text-dark-100 hover:text-white rounded-full my-2' size='sm'>
+            <Link href='/library' className='text-dark-100 px-3'><ChevronLeft/>Back to the library</Link>
+        </Button>
         <BookOverview {...bookDetails} userId={session?.user?.id as string}/>
 
         <div className="grid lg:grid-cols-2 mt-16 gap-7">
@@ -37,13 +39,6 @@ const Page = async ({params}:{ params:Promise<{id: string}>}) => {
             <p className="text-[15px] space-y-5 text-light-100">
                 {bookDetails.summary}
             </p>
-            <Button className='form-btn my-10 rounded-2xl' asChild>
-                <div>
-                <ChevronLeft size={20}/>
-                <Link href='/'> back to homepage</Link>
-                </div>
-          
-        </Button>
             </article>
             </div>
            
